@@ -5,7 +5,7 @@ var map = L.map('map').setView([43.65, -79.28],11);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; OpenStreetMap contributors'}).addTo(map);
 
 // load my data
-fetch("data/cybersecurity.geojson")
+fetch("data/crimeIncidents2025.geojson")
     .then(response => response.json())
     .then(data => {
         L.geoJSON(data, {
