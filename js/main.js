@@ -1,5 +1,5 @@
 // create the map
-var map = L.map('map').setView([43.65, -79.28],11);
+var map = L.map('map').setView([38.9, -77.03],12);
 
 // add basemap
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; OpenStreetMap contributors'}).addTo(map);
