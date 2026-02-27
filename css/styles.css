@@ -1,0 +1,13 @@
+.popup-content {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.popup-content h3{
+    margin: 0;
+    color: darkred;
+}
+
+.popup-content p {
+    margin: 4px 0;
+}
