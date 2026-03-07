@@ -1,3 +1,30 @@
+h1{
+    font-family: 'Franklin Gothic';
+    text-align: center;
+    font-size: 60px;
+}
+
+h3{
+    font-family: 'Franklin Gothic';
+    text-align: center;
+    font-size: 30px;
+}
+
+body{
+    background-color: #911D04;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+p{
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-size: 20px;
+    margin: 20px;
+    padding: 15px;
+}
+
 .popup-content {
     font-family: Arial, sans-serif;
     font-size: 14px;
@@ -10,4 +37,18 @@
 
 .popup-content p {
     margin: 4px 0;
+}
+footer{
+    bottom: 0;
+    width: auto;
+    height: 80px;
+    background-color: #666;
+    margin: 0;
+    padding: 0;
+    color: #fdfdfd;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    margin-top: 50px;
+    text-align: center;
+    font-family:Arial, Helvetica, sans-serif;
 }
