@@ -10,7 +10,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 // load data
-fetch("data/CrimeIncidents2025Final.geojson")
+fetch("data/crimeIncidents2025Final.geojson")
 .then(response => response.json())
 .then(data => {
 
