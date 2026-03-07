@@ -1,136 +1,142 @@
-// create the map
-var map = L.map('map').setView([38.9, -77.03], 12);
+// Create the map
+const map = L.map('map').setView([38.9, -77.03], 12);
 
-// add basemap
+// Basemap
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// month names
-const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+// Create names
+const months = [
+    "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
+];
 
-// load data
+
+// Load GeoJSON data
 fetch("data/crimeIncidents2025Final.geojson")
 .then(response => response.json())
 .then(data => {
 
-    // create layer
-    var geojsonLayer = L.geoJSON(data, {
-        pointToLayer: function(feature, latlng) {
+    const geojsonLayer = L.geoJSON(data, {
+
+        // Create proportional symbols
+        pointToLayer: (feature, latlng) => {
             return L.circleMarker(latlng, {
-                radius: 0, // initial radius, updated by slider
-                fillOpacity: 0.8,
-                color: "black",
-                weight: 1
+                radius: 0,
+                className: "crime-circle"
             });
         },
-        onEachFeature: function(feature, layer) {
-            let popupContent = "<strong>" + feature.properties.Neighborhood + "</strong><br>";
-            months.forEach(m => {
-                popupContent += m + ": " + feature.properties[m] + "<br>";
+
+        // Popups
+        onEachFeature: (feature, layer) => {
+
+            let popupContent = `<strong>${feature.properties.Neighborhood}</strong><br>`;
+
+            months.forEach(month => {
+                popupContent += `${month}: ${feature.properties[month]}<br>`;
             });
+
             layer.bindPopup(popupContent);
         }
+
     }).addTo(map);
 
-    // create controls
+    // Create slider + buttons
     createSequenceControls();
 
-    // initialize first month
+    // Initialize map
     updateSymbols(0, geojsonLayer);
 
-    // slider events
-    var slider = document.querySelector(".range-slider");
+    // Cache controls
+    const slider = document.querySelector(".range-slider");
+    const monthLabel = document.querySelector("#month-label");
 
-    slider.addEventListener("input", function() {
-        updateSymbols(Number(this.value), geojsonLayer);
+    // Slider interaction
+    slider.addEventListener("input", function () {
+        const index = Number(this.value);
+        updateSymbols(index, geojsonLayer);
+        monthLabel.innerHTML = months[index];
     });
 
-    document.querySelector("#forward").addEventListener("click", function() {
-        var index = Number(slider.value);
+    // Forward button
+    document.querySelector("#forward").addEventListener("click", () => {
+        let index = Number(slider.value);
         index = (index + 1) % 12;
         slider.value = index;
         updateSymbols(index, geojsonLayer);
+        monthLabel.innerHTML = months[index];
     });
 
-    document.querySelector("#reverse").addEventListener("click", function() {
-        var index = Number(slider.value);
+    // Reverse button
+    document.querySelector("#reverse").addEventListener("click", () => {
+        let index = Number(slider.value);
         index = (index - 1 + 12) % 12;
         slider.value = index;
         updateSymbols(index, geojsonLayer);
+        monthLabel.innerHTML = months[index];
     });
 
 });
 
-// update circle sizes based on month
-function updateSymbols(monthIndex, layerGroup) {
-    var month = months[monthIndex];
-    layerGroup.eachLayer(function(layer) {
-        var count = layer.feature.properties[month] || 0;
+// Update circle sizes
+function updateSymbols(monthIndex, layerGroup){
+    const month = months[monthIndex];
+    layerGroup.eachLayer(layer => {
+        const count = layer.feature.properties[month] || 0;
+        layer.setRadius(scaleRadius(count));
         layer.setStyle({
-            radius: scaleRadius(count),
             fillOpacity: count > 0 ? 0.8 : 0
         });
     });
 }
 
-// proportional scaling function
-function scaleRadius(count) {
-    return 4 + Math.sqrt(count); // sqrt for better visual scaling
+// Proportional scaling
+function scaleRadius(count){
+    return 4 + Math.sqrt(count);
 }
-
-// Sequence controls (month slider)
-function createSequenceControls() {
-    var SequenceControl = L.Control.extend({
+// Slider controls
+function createSequenceControls(){
+    const SequenceControl = L.Control.extend({
         options: { position: 'bottomleft' },
-
-        onAdd: function () {
-            var container = L.DomUtil.create('div', 'sequence-control-container');
-
+        onAdd: function(){
+            const container = L.DomUtil.create(
+                'div',
+                'sequence-control-container'
+            );
             container.innerHTML =
                 '<button class="step" id="reverse">Reverse</button>' +
                 '<input class="range-slider" type="range">' +
                 '<button class="step" id="forward">Forward</button>' +
                 '<div id="month-label"></div>';
-
             L.DomEvent.disableClickPropagation(container);
-
             return container;
         }
     });
-
     map.addControl(new SequenceControl());
-
-    var slider = document.querySelector(".range-slider");
-    slider.max = 11;
+    const slider = document.querySelector(".range-slider");
     slider.min = 0;
-    slider.value = 0;
+    slider.max = 11;
     slider.step = 1;
-
-    // update label
-    slider.addEventListener("input", function() {
-        document.querySelector("#month-label").innerHTML = months[this.value];
-    });
+    slider.value = 0;
     document.querySelector("#month-label").innerHTML = months[0];
+
 }
 
-// Add legend control
-var legend = L.control({position: 'bottomright'});
-
-legend.onAdd = function(map) {
-    var div = L.DomUtil.create('div', 'info legend');
-    var grades = [10, 30, 50, 70]; 
-    var labels = [];
-
+// Legend
+const legend = L.control({ position: 'bottomright' });
+legend.onAdd = function () {
+    const div = L.DomUtil.create('div', 'legend');
+    const grades = [10, 30, 50, 70];
     div.innerHTML += "<h4>Crime Incidents</h4>";
+    grades.forEach(value => {
 
-    for (var i = 0; i < grades.length; i++) {
-        var radius = Math.sqrt(grades[i]) * 2; // match symbol scaling
-        div.innerHTML +=
-            '<i style="background: #c40404; width: '+(radius*2)+'px; height:'+(radius*2)+'px; display:inline-block; border-radius:50%; margin-right:5px;"></i> ' +
-            grades[i] + '<br>';
-    }
-
+    const radius = scaleRadius(value);
+    div.innerHTML +=
+        `<div class="legend-item">
+            <span class="legend-circle" style="width:${radius*2}px;height:${radius*2}px"></span>
+            > ${value}
+        </div>`;
+});
     return div;
 };
 

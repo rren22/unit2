@@ -107,3 +107,32 @@ footer{
     padding-top: 25px;
     margin-top: 50px;
 }
+
+/* Crime circles */
+.crime-circle{
+    fill:#C40404;
+    stroke:#5A0000;
+    stroke-width:1;
+    fill-opacity:0.6;
+}
+
+/* Legend */
+.legend{
+    background:white;
+    padding:10px;
+    border-radius:6px;
+    box-shadow:0 0 6px rgba(0,0,0,0.3);
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    margin-bottom:6px;
+}
+
+.legend-circle{
+    display:inline-block;
+    border-radius:50%;
+    background:#C40404;
+    margin-right:8px;
+}
