@@ -113,3 +113,25 @@ function createSequenceControls() {
     });
     document.querySelector("#month-label").innerHTML = months[0];
 }
+
+// Add legend control
+var legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function(map) {
+    var div = L.DomUtil.create('div', 'info legend');
+    var grades = [10, 30, 50, 70]; 
+    var labels = [];
+
+    div.innerHTML += "<h4>Crime Incidents</h4>";
+
+    for (var i = 0; i < grades.length; i++) {
+        var radius = Math.sqrt(grades[i]) * 2; // match symbol scaling
+        div.innerHTML +=
+            '<i style="background: #c40404; width: '+(radius*2)+'px; height:'+(radius*2)+'px; display:inline-block; border-radius:50%; margin-right:5px;"></i> ' +
+            grades[i] + '<br>';
+    }
+
+    return div;
+};
+
+legend.addTo(map);
