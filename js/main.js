@@ -7,7 +7,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // load data
-fetch("data/Crime_Incidents_in_2025Final.csv")
+fetch("data/CrimeIncidents2025Final.geojson")
 .then(response => response.json())
 .then(data => {
 
